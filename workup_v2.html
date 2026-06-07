@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkUp — узнай, что мешает получить оффер мечты</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Onest:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #0a0a0a;
+  --gray: #141414;
+  --gray2: #1c1c1c;
+  --border: #282828;
+  --border2: #333;
+  --white: #f0ece3;
+  --muted: #666;
+  --muted2: #888;
+  --lime: #c8f135;
+  --lime-dim: rgba(200,241,53,0.12);
+  --lime-dim2: rgba(200,241,53,0.06);
+  --red: #ff4b4b;
+  --red-dim: rgba(255,75,75,0.1);
+  --green: #3dd68c;
+  --green-dim: rgba(61,214,140,0.1);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Onest', sans-serif;
+  background: var(--black);
+  color: var(--white);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hidden { display: none !important; }
+
+/* ── PROGRESS BAR ── */
+#gp { position: fixed; top: 0; left: 0; right: 0; height: 2px; background: var(--border); z-index: 1000; }
+#gp-fill { height: 100%; background: var(--lime); transition: width .4s ease; width: 0%; }
+
+/* ── HEADER ── */
+header {
+  padding: 20px 40px;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 2px; z-index: 99;
+  background: rgba(10,10,10,.92);
+  backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 15px; font-weight: 600;
+  color: var(--white); letter-spacing: -.02em;
+}
+.logo em { color: var(--lime); font-style: normal; }
+.header-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--muted);
+  letter-spacing: .1em; text-transform: uppercase;
+}
+
+/* ── CONTAINER ── */
+.wrap { max-width: 780px; margin: 0 auto; padding: 0 40px; }
+
+/* ── HERO ── */
+#hero { padding: 100px 0 80px; }
+.hero-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--lime-dim); border: 1px solid rgba(200,241,53,.2);
+  border-radius: 100px; padding: 5px 14px 5px 8px;
+  font-size: 12px; color: var(--lime);
+  margin-bottom: 32px;
+}
+.hero-pill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--lime); }
+h1 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(2rem, 5.5vw, 3.4rem);
+  font-weight: 800; line-height: 1.1;
+  letter-spacing: -.03em;
+  margin-bottom: 20px;
+}
+h1 em { color: var(--lime); font-style: normal; }
+.hero-sub {
+  font-size: 1.05rem; color: var(--muted2);
+  max-width: 500px; line-height: 1.75;
+  margin-bottom: 40px; font-weight: 300;
+}
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-lime {
+  font-family: 'Onest', sans-serif;
+  background: var(--lime); color: var(--black);
+  border: none; border-radius: 8px;
+  font-size: 14px; font-weight: 500;
+  padding: 12px 24px; cursor: pointer;
+  transition: opacity .15s;
+}
+.btn-lime:hover { opacity: .88; }
+.btn-ghost {
+  font-family: 'Onest', sans-serif;
+  background: transparent; color: var(--muted2);
+  border: 1px solid var(--border2); border-radius: 8px;
+  font-size: 14px; font-weight: 400;
+  padding: 12px 24px; cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.btn-ghost:hover { border-color: var(--muted2); color: var(--white); }
+
+.hero-stats {
+  display: flex; gap: 40px; margin-top: 60px;
+  padding-top: 40px; border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.hero-stat-val {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.7rem; font-weight: 600; color: var(--lime);
+}
+.hero-stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* ── SECTION ── */
+.section { padding: 72px 0; border-top: 1px solid var(--border); }
+.sec-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .14em;
+  color: var(--muted); text-transform: uppercase;
+  margin-bottom: 14px;
+}
+h2 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(1.3rem, 3vw, 1.85rem);
+  font-weight: 600; letter-spacing: -.02em;
+  margin-bottom: 36px; line-height: 1.2;
+}
+
+/* ── HOW IT WORKS ── */
+.how-steps { display: flex; flex-direction: column; }
+.how-step {
+  display: grid; grid-template-columns: 44px 1fr;
+  gap: 20px; align-items: flex-start;
+  padding: 22px 0; border-bottom: 1px solid var(--border);
+}
+.how-step:last-child { border-bottom: none; }
+.how-step-num {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--muted); flex-shrink: 0;
+}
+.how-step.hl .how-step-num { background: var(--lime); color: var(--black); border-color: var(--lime); }
+.how-step-title { font-weight: 500; margin-bottom: 4px; font-size: .95rem; }
+.how-step-desc { font-size: .85rem; color: var(--muted2); line-height: 1.65; }
+.how-step-tag {
+  display: inline-block; margin-top: 8px;
+  font-size: .72rem; padding: 2px 9px; border-radius: 100px;
+  background: var(--gray2); border: 1px solid var(--border);
+  color: var(--muted); font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── QUIZ WRAPPER ── */
+#quiz-section { padding: 72px 0; border-top: 1px solid var(--border); }
+.quiz-box {
+  background: var(--gray); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+}
+
+/* Job picker */
+#job-picker { padding: 36px; }
+.quiz-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.3rem; font-weight: 600;
+  letter-spacing: -.02em; margin-bottom: 6px;
+}
+.quiz-sub { font-size: .85rem; color: var(--muted); margin-bottom: 28px; }
+.job-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+.job-card {
+  border: 1px solid var(--border2); border-radius: 10px;
+  padding: 16px 18px; cursor: pointer;
+  display: flex; align-items: flex-start; gap: 12px;
+  transition: border-color .15s, background .15s;
+  background: var(--gray2);
+}
+.job-card:hover { border-color: var(--muted2); }
+.job-card.selected { border-color: var(--lime); background: var(--lime-dim2); }
+.job-radio {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 1.5px solid var(--border2); flex-shrink: 0;
+  margin-top: 3px; transition: border-color .15s; position: relative;
+}
+.job-card.selected .job-radio { border-color: var(--lime); }
+.job-card.selected .job-radio::after {
+  content: ''; position: absolute;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--lime); top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+}
+.job-name { font-size: .88rem; font-weight: 500; margin-bottom: 3px; color: var(--white); }
+.job-desc { font-size: .77rem; color: var(--muted); }
+
+/* Quiz progress */
+#qz-prog-bar { height: 2px; background: var(--border); }
+#qz-prog-fill { height: 100%; background: var(--lime); transition: width .3s ease; }
+#qz-header {
+  padding: 18px 36px 0;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.q-counter { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); }
+.q-cat-badge {
+  font-size: 10px; color: var(--muted2);
+  background: var(--gray2); border: 1px solid var(--border);
+  padding: 3px 10px; border-radius: 20px;
+  font-family: 'JetBrains Mono', monospace; letter-spacing: .04em;
+}
+
+/* Question area */
+#q-area { padding: 24px 36px 32px; }
+.q-text { font-size: 1.05rem; font-weight: 400; line-height: 1.55; margin-bottom: 22px; }
+.options { display: flex; flex-direction: column; gap: 9px; }
+.option {
+  border: 1px solid var(--border2); border-radius: 9px;
+  padding: 13px 16px; cursor: pointer; font-size: .88rem;
+  display: flex; align-items: center; gap: 12px;
+  color: var(--white); background: var(--gray2);
+  transition: border-color .12s, background .12s;
+}
+.option:hover:not(.disabled) { border-color: var(--muted2); background: var(--border); }
+.option.selected { border-color: var(--lime); background: var(--lime-dim2); }
+.option.correct { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+.option.wrong { border-color: var(--red); background: var(--red-dim); color: var(--red); }
+.option.disabled { cursor: default; }
+.option-letter {
+  width: 22px; height: 22px; border-radius: 5px;
+  border: 1.5px solid currentColor; display: flex;
+  align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; flex-shrink: 0; opacity: .5;
+}
+.opt-explain {
+  margin-top: 14px; padding: 12px 15px;
+  background: var(--gray2); border-radius: 8px;
+  font-size: .82rem; color: var(--muted2); line-height: 1.6;
+  border-left: 2px solid var(--border2); display: none;
+}
+.opt-explain.vis { display: block; }
+.opt-explain.ok { border-color: var(--green); }
+.opt-explain.fail { border-color: var(--red); }
+
+#next-area { padding: 0 36px 32px; }
+.btn-lime-full {
+  display: block; width: 100%;
+  background: var(--lime); color: var(--black);
+  border: none; border-radius: 9px;
+  font-family: 'Onest', sans-serif;
+  font-size: .9rem; font-weight: 500;
+  padding: 13px; cursor: pointer;
+  transition: opacity .15s; text-align: center;
+}
+.btn-lime-full:hover { opacity: .88; }
+.btn-lime-full:disabled { opacity: .28; cursor: default; }
+
+/* ── RESULTS ── */
+#result-section { display: none; }
+
+.res-top {
+  background: var(--gray); border: 1px solid var(--border);
+  border-radius: 16px; padding: 36px; margin-bottom: 20px;
+}
+.res-job {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+}
+.res-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.5rem; font-weight: 600;
+  letter-spacing: -.02em; margin-bottom: 24px; line-height: 1.2;
+}
+.score-row { display: flex; gap: 32px; margin-bottom: 28px; flex-wrap: wrap; }
+.score-item { display: flex; flex-direction: column; gap: 3px; }
+.score-num {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 2.4rem; font-weight: 600; letter-spacing: -.04em;
+}
+.score-label { font-size: 11px; color: var(--muted); }
+.score-lime { color: var(--lime); }
+.score-red { color: var(--red); }
+.score-green { color: var(--green); }
+
+.skill-section { margin-top: 24px; }
+.skill-head {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 14px;
+}
+.skill-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 0; border-bottom: 1px solid var(--border);
+}
+.skill-row:last-child { border-bottom: none; }
+.skill-name { font-size: .88rem; flex: 1; }
+.skill-bar-wrap { width: 110px; height: 3px; background: var(--border2); border-radius: 2px; flex-shrink: 0; }
+.skill-bar-fill { height: 100%; border-radius: 2px; transition: width .6s ease; }
+.skill-score {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--muted); width: 34px; text-align: right; flex-shrink: 0;
+}
+
+/* Gaps block */
+.gaps-block {
+  background: rgba(255,75,75,.06); border: 1px solid rgba(255,75,75,.18);
+  border-radius: 14px; padding: 24px; margin-bottom: 20px;
+}
+.gaps-title {
+  font-size: .82rem; font-weight: 500; color: var(--red);
+  margin-bottom: 14px;
+}
+.gap-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 9px 0; border-bottom: 1px solid rgba(255,75,75,.1);
+  font-size: .85rem; color: var(--white);
+}
+.gap-item:last-child { border-bottom: none; }
+.gap-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--red); margin-top: 9px; flex-shrink: 0; }
+
+/* Wrongs */
+.wrongs-block { margin-bottom: 20px; }
+.wrong-item {
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px 18px; margin-bottom: 10px; background: var(--gray);
+}
+.wrong-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  background: var(--red-dim); color: var(--red);
+  padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 9px;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.wrong-q { font-size: .85rem; font-weight: 500; margin-bottom: 8px; }
+.wrong-your { font-size: .82rem; color: var(--red); margin-bottom: 3px; }
+.wrong-right { font-size: .82rem; color: var(--green); }
+
+/* ── KEY MOMENT: карта пробелов и CTA ── */
+.gap-map {
+  background: var(--gray); border: 1px solid var(--border);
+  border-radius: 16px; padding: 36px; margin-bottom: 20px;
+}
+.gap-map-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.15rem; font-weight: 600;
+  letter-spacing: -.02em; margin-bottom: 6px;
+}
+.gap-map-sub { font-size: .85rem; color: var(--muted2); margin-bottom: 24px; }
+
+/* Conversion CTA — ключевой блок */
+.cta-main {
+  background: var(--lime); border-radius: 16px;
+  padding: 36px; margin-bottom: 20px; text-align: center;
+}
+.cta-main-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(0,0,0,.45); margin-bottom: 14px;
+}
+.cta-main-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.35rem; font-weight: 700;
+  color: var(--black); margin-bottom: 8px;
+  letter-spacing: -.02em; line-height: 1.2;
+}
+.cta-main-sub { font-size: .88rem; color: rgba(0,0,0,.6); margin-bottom: 28px; line-height: 1.6; }
+.cta-cards-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cta-card {
+  background: rgba(0,0,0,.1); border-radius: 12px;
+  padding: 22px; text-align: left;
+}
+.cta-card-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(0,0,0,.45); margin-bottom: 8px;
+}
+.cta-card-name { font-size: .9rem; font-weight: 600; color: var(--black); margin-bottom: 6px; }
+.cta-card-price {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.5rem; font-weight: 700; color: var(--black);
+  margin-bottom: 12px; letter-spacing: -.03em;
+}
+.cta-card-price span { font-size: .75rem; font-family: 'Onest', sans-serif; font-weight: 400; opacity: .6; }
+.cta-card-feats { list-style: none; margin-bottom: 16px; }
+.cta-card-feats li {
+  font-size: .78rem; color: rgba(0,0,0,.65);
+  padding: 3px 0 3px 12px; position: relative; line-height: 1.5;
+}
+.cta-card-feats li::before { content: '—'; position: absolute; left: 0; opacity: .4; }
+.btn-black {
+  display: block; width: 100%;
+  background: var(--black); color: var(--lime);
+  border: none; border-radius: 8px;
+  font-family: 'Onest', sans-serif;
+  font-size: .82rem; font-weight: 600;
+  padding: 11px; cursor: pointer;
+  transition: opacity .15s; text-align: center;
+}
+.btn-black:hover { opacity: .85; }
+.btn-black-outline {
+  display: block; width: 100%;
+  background: transparent; color: var(--black);
+  border: 1.5px solid rgba(0,0,0,.3); border-radius: 8px;
+  font-family: 'Onest', sans-serif;
+  font-size: .82rem; font-weight: 500;
+  padding: 11px; cursor: pointer;
+  transition: border-color .15s; text-align: center;
+}
+.btn-black-outline:hover { border-color: rgba(0,0,0,.6); }
+.cta-note { font-size: .75rem; color: rgba(0,0,0,.4); margin-top: 16px; }
+
+/* IDP */
+.idp-box {
+  background: var(--gray); border: 1px solid var(--border);
+  border-radius: 16px; padding: 36px; margin-bottom: 20px;
+}
+.idp-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.1rem; font-weight: 600;
+  letter-spacing: -.02em; margin-bottom: 6px;
+}
+.idp-sub { font-size: .85rem; color: var(--muted); margin-bottom: 24px; }
+.idp-item {
+  border: 1px solid var(--border); border-radius: 9px;
+  padding: 15px 18px; margin-bottom: 9px;
+  display: flex; gap: 14px; align-items: flex-start;
+  background: var(--gray2);
+}
+.idp-check {
+  width: 18px; height: 18px; border: 1.5px solid var(--border2);
+  border-radius: 4px; flex-shrink: 0; margin-top: 2px; cursor: pointer;
+  transition: all .15s;
+}
+.idp-check:hover { border-color: var(--lime); }
+.idp-check.done {
+  border-color: var(--lime); background: var(--lime);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 12 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 5l3.5 3.5L11 1' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: center; background-size: 10px;
+}
+.idp-body { flex: 1; }
+.idp-topic { font-size: .88rem; font-weight: 500; margin-bottom: 6px; }
+.idp-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.idp-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  padding: 2px 8px; border-radius: 4px; color: var(--muted);
+  border: 1px solid var(--border2); letter-spacing: .04em;
+}
+.idp-deadline { font-size: .77rem; color: var(--muted); }
+.idp-link {
+  font-size: .8rem; color: var(--muted2);
+  text-decoration: none; border-bottom: 1px solid var(--border2);
+}
+.idp-link:hover { color: var(--lime); border-color: var(--lime); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 40px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 10px;
+}
+.footer-logo { font-family: 'Unbounded', sans-serif; font-size: .8rem; color: var(--muted); font-weight: 600; }
+.footer-logo em { color: var(--lime); font-style: normal; }
+.footer-copy { font-size: .78rem; color: var(--muted); }
+
+@media (max-width: 600px) {
+  .wrap { padding: 0 20px; }
+  header { padding: 16px 20px; }
+  #hero { padding: 64px 0 48px; }
+  .job-grid { grid-template-columns: 1fr; }
+  .cta-cards-row { grid-template-columns: 1fr; }
+  .score-row { gap: 20px; }
+  #job-picker, #q-area, #next-area, .gap-map, .cta-main, .idp-box, .res-top { padding: 24px 20px; }
+  #qz-header { padding: 14px 20px 0; }
+  footer { padding: 24px 20px; }
+  h1 { font-size: 1.9rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="gp"><div id="gp-fill"></div></div>
+
+<header>
+  <div class="logo">Work<em>Up</em></div>
+  <div class="header-tag">Beta · СНГ</div>
+</header>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="wrap">
+    <div class="hero-pill"><span class="hero-pill-dot"></span>Новый концепт · проверяем конверсию</div>
+    <h1>Узнай, что мешает<br>получить <em>оффер мечты</em></h1>
+    <p class="hero-sub">Выбери свою дрим-джоб — пройди тест — получи точную карту пробелов. Не «учи всё», а «вот что именно тебе не хватает».</p>
+    <div class="hero-btns">
+      <button class="btn-lime" onclick="scrollToQuiz()">Пройти тест бесплатно →</button>
+      <button class="btn-ghost" onclick="scrollToHow()">Как это работает</button>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-val">990₽</div>
+        <div class="hero-stat-label">закрыть пробелы</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">10 мин</div>
+        <div class="hero-stat-label">на тест</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">2 пути</div>
+        <div class="hero-stat-label">куратор или эксперт</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="section" id="how-section">
+  <div class="wrap">
+    <div class="sec-tag">Как работает</div>
+    <h2>От теста — к офферу</h2>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-num">01</div>
+        <div>
+          <div class="how-step-title">Выбираешь дрим-джоб</div>
+          <div class="how-step-desc">SMM, Python, QA или Data Analyst — профессия, в которую хочешь войти или вырасти.</div>
+          <span class="how-step-tag">бесплатно</span>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">02</div>
+        <div>
+          <div class="how-step-title">Проходишь тест — 10 вопросов по ключевым темам роли</div>
+          <div class="how-step-desc">Вопросы из реальных требований вакансий. После каждого ответа — объяснение, почему именно так.</div>
+          <span class="how-step-tag">10 минут</span>
+        </div>
+      </div>
+      <div class="how-step hl">
+        <div class="how-step-num">03</div>
+        <div>
+          <div class="how-step-title">Получаешь карту пробелов — точно, без воды</div>
+          <div class="how-step-desc">Не «ты слабый в маркетинге», а «ты не знаешь как считать ROMI и что такое lookalike-аудитория». Каждый пробел — конкретная тема.</div>
+          <span class="how-step-tag">ключевой момент</span>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">04</div>
+        <div>
+          <div class="how-step-title">Выбираешь путь закрытия</div>
+          <div class="how-step-desc">Лайт-куратор (живой человек, подписка 900₽/мес) — идёшь сам, но не один. Или эксперт 1:1 (3 000₽/сессия) — видит твою карту пробелов, сразу к решению.</div>
+          <span class="how-step-tag">твой выбор</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── QUIZ ── -->
+<section id="quiz-section">
+  <div class="wrap">
+    <div class="sec-tag">Тест</div>
+    <h2>Найди свои пробелы</h2>
+    <div class="quiz-box" id="quiz-box">
+
+      <!-- JOB PICKER -->
+      <div id="job-picker">
+        <div class="quiz-title">Выбери дрим-джоб</div>
+        <div class="quiz-sub">Под каждую профессию — свои вопросы и карта пробелов</div>
+        <div class="job-grid">
+          <div class="job-card" onclick="selectJob('smm')" id="job-smm">
+            <div class="job-radio" id="radio-smm"></div>
+            <div>
+              <div class="job-name">SMM-менеджер</div>
+              <div class="job-desc">Контент, метрики, таргет, стратегия</div>
+            </div>
+          </div>
+          <div class="job-card" onclick="selectJob('python')" id="job-python">
+            <div class="job-radio"></div>
+            <div>
+              <div class="job-name">Junior Python-разработчик</div>
+              <div class="job-desc">Синтаксис, ООП, структуры данных</div>
+            </div>
+          </div>
+          <div class="job-card" onclick="selectJob('qa')" id="job-qa">
+            <div class="job-radio"></div>
+            <div>
+              <div class="job-name">Junior QA-инженер</div>
+              <div class="job-desc">Тестирование, документация, инструменты</div>
+            </div>
+          </div>
+          <div class="job-card" onclick="selectJob('da')" id="job-da">
+            <div class="job-radio"></div>
+            <div>
+              <div class="job-name">Data Analyst</div>
+              <div class="job-desc">SQL, статистика, визуализация данных</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-lime-full" id="start-btn" onclick="startQuiz()" disabled>Начать тест →</button>
+      </div>
+
+      <!-- QUIZ PROGRESS -->
+      <div id="qz-prog-bar" class="hidden"><div id="qz-prog-fill"></div></div>
+      <div id="qz-header" class="hidden">
+        <span class="q-counter" id="q-counter">1 / 10</span>
+        <span class="q-cat-badge" id="q-cat">Категория</span>
+      </div>
+
+      <!-- QUESTION -->
+      <div id="q-area" class="hidden">
+        <div class="q-text" id="q-text"></div>
+        <div class="options" id="opts"></div>
+        <div class="opt-explain" id="opt-explain"></div>
+      </div>
+      <div id="next-area" class="hidden">
+        <button class="btn-lime-full" id="next-btn" onclick="nextQ()" disabled>Следующий вопрос →</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── RESULTS ── -->
+<section id="result-section">
+  <div class="wrap">
+
+    <!-- Score top -->
+    <div class="res-top" id="res-top"></div>
+
+    <!-- Gaps list -->
+    <div class="gaps-block hidden" id="gaps-block"></div>
+
+    <!-- Wrongs detail -->
+    <div class="wrongs-block hidden" id="wrongs-block"></div>
+
+    <!-- GAP MAP + MAIN CTA — ключевой блок конверсии -->
+    <div class="gap-map hidden" id="gap-map-block">
+      <div class="gap-map-title" id="gap-map-title">Твоя карта пробелов</div>
+      <div class="gap-map-sub" id="gap-map-sub">Вот что конкретно нужно закрыть, чтобы пройти собеседование</div>
+      <div id="gap-map-bars"></div>
+    </div>
+
+    <!-- CONVERSION CTA -->
+    <div class="cta-main hidden" id="cta-main">
+      <div class="cta-main-tag">Выбери путь · персональное предложение</div>
+      <div class="cta-main-title" id="cta-main-title">Закрой пробелы — получи оффер</div>
+      <div class="cta-main-sub" id="cta-main-sub">Куратор видит твою карту и поможет закрыть пробелы за 30 дней</div>
+      <div class="cta-cards-row">
+        <div class="cta-card">
+          <div class="cta-card-label">Самостоятельно</div>
+          <div class="cta-card-name">Лайт-куратор</div>
+          <div class="cta-card-price">900₽ <span>/мес</span></div>
+          <ul class="cta-card-feats">
+            <li>Живой куратор в чате</li>
+            <li>Созвон раз в месяц (20 мин)</li>
+            <li>Видит твою карту пробелов</li>
+            <li>План по каждой теме</li>
+            <li>Отмена в любой момент</li>
+          </ul>
+          <button class="btn-black" onclick="trackCTA('curator', 900)">Начать с куратором →</button>
+        </div>
+        <div class="cta-card">
+          <div class="cta-card-label">Быстрый результат</div>
+          <div class="cta-card-name">Эксперт 1:1</div>
+          <div class="cta-card-price">3 000₽ <span>/сессия</span></div>
+          <ul class="cta-card-feats">
+            <li>Разбор пробелов лично</li>
+            <li>Эксперт видит данные до звонка</li>
+            <li>60 минут — сразу к решению</li>
+            <li>Конкретный план действий</li>
+            <li>Запись + материалы</li>
+          </ul>
+          <button class="btn-black-outline" onclick="trackCTA('expert', 3000)">Записаться к эксперту →</button>
+        </div>
+      </div>
+      <div class="cta-note">Нажатие фиксирует интерес — это тест конверсии. Оплата пока не требуется.</div>
+    </div>
+
+    <!-- IDP -->
+    <div class="idp-box hidden" id="idp-block">
+      <div class="idp-title" id="idp-title">Твой план обучения</div>
+      <div class="idp-sub" id="idp-sub">Темы, дедлайны и ресурсы — только то, чего не хватает</div>
+      <div id="idp-list"></div>
+      <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+        <button class="btn-lime" onclick="window.scrollTo({top:0,behavior:'smooth'})">Пройти снова</button>
+        <button class="btn-ghost" onclick="savePDF()">Сохранить план ↓</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Work<em>Up</em></div>
+  <div class="footer-copy">© 2025 WorkUp · gap → growth → offer</div>
+</footer>
+
+<script>
+/* ── ANALYTICS ── */
+const _ev = [];
+function track(ev, data={}) {
+  const entry = { ev, ...data, ts: new Date().toISOString() };
+  _ev.push(entry);
+  console.log('[WORKUP]', entry);
+  // Подключить: PostHog / Яндекс.Метрика / GA4
+}
+track('page_view');
+
+/* ── DB (перенесена из v1 без изменений) ── */
+const DB = {
+  smm: {
+    name: 'SMM-менеджер',
+    categories: { 'Метрики':['q1','q2','q3'], 'Контент':['q4','q5'], 'Таргет':['q6','q7'], 'Стратегия':['q8','q9','q10'] },
+    questions: [
+      { id:'q1', cat:'Метрики', text:'Что означает ROMI?', options:['Return on Marketing Investment','Return on Media Interest','Reach of Marketing Indicators','Rate of Monthly Impressions'], answer:0, explain:'ROMI = (Доход от маркетинга − Затраты) / Затраты × 100%. Показывает окупаемость маркетинговых вложений.' },
+      { id:'q2', cat:'Метрики', text:'Какой CTR считается хорошим для сторис в Telegram-канале?', options:['0.5–1%','1–3%','5–10%','15–25%'], answer:2, explain:'Для Telegram-сторис норма CTR — 5–10%. Ниже 3% — сигнал к пересмотру контента.' },
+      { id:'q3', cat:'Метрики', text:'Что такое ER (Engagement Rate)?', options:['Количество просмотров публикации','Вовлечённость аудитории (реакции+коменты / охват)','Стоимость одного клика','Скорость роста подписчиков'], answer:1, explain:'ER = (реакции + комменты + репосты) / охват × 100%. Показывает, насколько аудитория живая.' },
+      { id:'q4', cat:'Контент', text:'Что такое контент-план?', options:['Список всех аккаунтов конкурентов','График и тематика публикаций на период','Технический план сайта','Смета на рекламу'], answer:1, explain:'Контент-план — таблица с темами, форматами, датами и целями каждого поста.' },
+      { id:'q5', cat:'Контент', text:'Какой формат даёт наибольший органический охват в Instagram/VK?', options:['Длинные тексты без картинок','Reels/клипы (короткое вертикальное видео)','PDF-карусели','Ссылки на внешние сайты'], answer:1, explain:'Алгоритмы продвигают короткое видео — Reels/клипы получают в 2–4 раза больший охват.' },
+      { id:'q6', cat:'Таргет', text:'Что такое CPM в таргетированной рекламе?', options:['Cost Per Message','Cost Per Mille (стоимость 1000 показов)','Clicks Per Month','Conversion per Minute'], answer:1, explain:'CPM (Cost Per Mille) — стоимость 1000 показов объявления.' },
+      { id:'q7', cat:'Таргет', text:'Что такое lookalike-аудитория?', options:['Аудитория конкурентов','Аудитория, похожая по поведению на ваших клиентов','Боты и накрученные подписчики','Аудитория по интересам'], answer:1, explain:'Lookalike — алгоритм находит пользователей, похожих на загруженный список клиентов. Высокая конверсия.' },
+      { id:'q8', cat:'Стратегия', text:'Что такое TOV (Tone of Voice)?', options:['Громкость рекламы','Голос и стиль общения бренда с аудиторией','Технический стандарт видео','Тип рекламного кабинета'], answer:1, explain:'TOV — как бренд говорит: дружелюбно или строго, с юмором или серьёзно. Прописывается в бренд-гайде.' },
+      { id:'q9', cat:'Стратегия', text:'Зачем анализ конкурентов перед запуском SMM?', options:['Чтобы скопировать их контент','Чтобы понять рынок, найти ниши и отстроиться','Анализ не нужен','Только чтобы узнать цены'], answer:1, explain:'Анализ конкурентов помогает найти пробелы контента, понять ожидания аудитории и сформировать позиционирование.' },
+      { id:'q10', cat:'Стратегия', text:'Что такое KPI в контексте SMM?', options:['Накрученные подписчики','Key Performance Indicators — ключевые показатели эффективности','Тип рекламного формата','Программа для редактирования'], answer:1, explain:'KPI — метрики для оценки успеха: охват, ER, CPL. Согласуются с клиентом до старта.' },
+    ],
+    idp: {
+      base: [
+        { topic:'Базовые метрики SMM: охват, ER, CTR, ROMI', weeks:2, link:'https://vc.ru/marketing', tag:'Метрики' },
+        { topic:'Контент-план: структура и форматы', weeks:1, link:'https://skillbox.ru/media/marketing/', tag:'Контент' },
+        { topic:'Основы таргетированной рекламы ВКонтакте', weeks:3, link:'https://vk.com/ads', tag:'Таргет' },
+        { topic:'TOV и позиционирование бренда', weeks:2, link:'https://practicum.yandex.ru', tag:'Стратегия' },
+        { topic:'Инструменты аналитики: DataFan, LiveDune', weeks:1, link:'https://datafan.ru', tag:'Аналитика' },
+      ],
+      mid: [
+        { topic:'Углублённая аналитика: UTM-метки, сквозная', weeks:2, link:'https://calltouch.ru', tag:'Аналитика' },
+        { topic:'Lookalike и ретаргетинг', weeks:2, link:'https://target.my.com', tag:'Таргет' },
+        { topic:'A/B тесты в контенте и рекламе', weeks:1, link:'https://vc.ru/marketing', tag:'Эксперименты' },
+      ],
+      advanced: [
+        { topic:'Автоворонки и чат-боты в Telegram', weeks:3, link:'https://botmother.com', tag:'Автоматизация' },
+        { topic:'Performance-маркетинг: CPA, ROAS', weeks:2, link:'https://skillbox.ru', tag:'Performance' },
+      ],
+    }
+  },
+  python: {
+    name: 'Junior Python-разработчик',
+    categories: { 'Синтаксис':['q1','q2','q3'], 'Структуры данных':['q4','q5'], 'ООП':['q6','q7'], 'Инструменты':['q8','q9','q10'] },
+    questions: [
+      { id:'q1', cat:'Синтаксис', text:'Что выведет: print(type([]))?', options:['<class "array">','<class "list">','<class "tuple">','<class "object">'], answer:1, explain:'[] — это литерал списка (list). type([]) возвращает <class "list">.' },
+      { id:'q2', cat:'Синтаксис', text:'Чем list отличается от tuple?', options:['tuple изменяемый, list — нет','list изменяемый, tuple — нет','Они идентичны','list быстрее tuple в 10 раз'], answer:1, explain:'list — mutable, tuple — immutable. Tuple быстрее и безопаснее для постоянных данных.' },
+      { id:'q3', cat:'Синтаксис', text:'x = [1,2,3]; y = x; y.append(4); print(x)?', options:['[1, 2, 3]','[1, 2, 3, 4]','Ошибка','[4]'], answer:1, explain:'y = x — ссылка, не копия. Изменение y меняет x. Для копии: y = x.copy()' },
+      { id:'q4', cat:'Структуры данных', text:'Какой тип данных хранит пары ключ–значение?', options:['list','tuple','dict','set'], answer:2, explain:'dict — словарь, хранит {ключ: значение}.' },
+      { id:'q5', cat:'Структуры данных', text:'Что при добавлении дубля в set?', options:['Ошибка TypeError','Добавится дважды','Дубль проигнорируется','set конвертируется в list'], answer:2, explain:'set хранит только уникальные значения — дубль просто игнорируется.' },
+      { id:'q6', cat:'ООП', text:'Что делает __init__?', options:['Деструктор','Итератор','Конструктор: инициализирует объект','Статический метод'], answer:2, explain:'__init__ вызывается при создании объекта и устанавливает начальные атрибуты.' },
+      { id:'q7', cat:'ООП', text:'Что такое наследование?', options:['Копирование кода','Дочерний класс получает атрибуты родителя','Импорт библиотек','Декоратор'], answer:1, explain:'class Dog(Animal): — Dog наследует Animal, переиспользует и переопределяет методы.' },
+      { id:'q8', cat:'Инструменты', text:'Что такое venv?', options:['Тип переменной','Изолированная среда для зависимостей','Веб-сервер','Отладчик'], answer:1, explain:'venv изолирует зависимости проекта — разные проекты используют разные версии библиотек.' },
+      { id:'q9', cat:'Инструменты', text:'Для чего Git?', options:['Редактор кода','Система контроля версий','Менеджер пакетов','База данных'], answer:1, explain:'Git отслеживает изменения, позволяет откатиться и работать в команде.' },
+      { id:'q10', cat:'Инструменты', text:'pip install requests делает?', options:['Запускает HTTP-сервер','Устанавливает библиотеку requests','Создаёт новый проект','Компилирует Python'], answer:1, explain:'pip — менеджер пакетов. requests — библиотека для HTTP-запросов.' },
+    ],
+    idp: {
+      base: [
+        { topic:'Базовый синтаксис: типы, условия, циклы', weeks:2, link:'https://pythontutor.ru', tag:'Синтаксис' },
+        { topic:'Структуры данных: list, dict, set, tuple', weeks:2, link:'https://docs.python.org/3/tutorial/', tag:'Структуры' },
+        { topic:'Функции, lambda, map/filter', weeks:1, link:'https://realpython.com', tag:'Функции' },
+        { topic:'ООП: классы, наследование, инкапсуляция', weeks:3, link:'https://stepik.org/course/58852', tag:'ООП' },
+        { topic:'Git: базовые команды', weeks:1, link:'https://learngitbranching.js.org', tag:'Git' },
+      ],
+      mid: [
+        { topic:'Файлы и исключения', weeks:1, link:'https://realpython.com', tag:'Файлы/IO' },
+        { topic:'venv и pip', weeks:1, link:'https://docs.python.org/3/library/venv.html', tag:'Инфра' },
+        { topic:'Базы данных: SQLite', weeks:2, link:'https://sqlitetutorial.net', tag:'БД' },
+      ],
+      advanced: [
+        { topic:'Async Python: asyncio', weeks:3, link:'https://realpython.com/async-io-python/', tag:'Async' },
+        { topic:'REST API на FastAPI', weeks:3, link:'https://fastapi.tiangolo.com', tag:'Backend' },
+      ],
+    }
+  },
+  qa: {
+    name: 'Junior QA-инженер',
+    categories: { 'Теория':['q1','q2','q3'], 'Документация':['q4','q5'], 'Виды тестирования':['q6','q7'], 'Инструменты':['q8','q9','q10'] },
+    questions: [
+      { id:'q1', cat:'Теория', text:'Что такое баг (дефект)?', options:['Новая фича','Отклонение фактического результата от ожидаемого','Комментарий в коде','Раздел документации'], answer:1, explain:'Баг — несоответствие фактического и ожидаемого поведения системы.' },
+      { id:'q2', cat:'Теория', text:'Что проверяет тест-кейс?', options:['Скорость сервера','Конкретный сценарий поведения системы','Только UI','Размер БД'], answer:1, explain:'Тест-кейс проверяет конкретный сценарий: входные данные → шаги → ожидаемый результат.' },
+      { id:'q3', cat:'Теория', text:'Что такое регрессионное тестирование?', options:['Тестирование производительности','Проверка, что старые функции не сломались после изменений','Тестирование новых фич','Ручной аудит кода'], answer:1, explain:'Регрессия проверяет что новые изменения не сломали существующую функциональность.' },
+      { id:'q4', cat:'Документация', text:'Что должен содержать баг-репорт?', options:['Только скриншот','Только заголовок','Шаги воспроизведения, ожидаемый и фактический результат, приоритет','Только описание проблемы'], answer:2, explain:'Хороший баг-репорт: заголовок, шаги, ожидаемый/фактический результат, серьёзность, среда.' },
+      { id:'q5', cat:'Документация', text:'Чек-лист vs тест-кейс — в чём разница?', options:['Это одно и то же','Чек-лист — список проверок без деталей, тест-кейс — детальный сценарий','Тест-кейс короче','Чек-лист только для UI'], answer:1, explain:'Чек-лист — быстрая проверка, тест-кейс — формальный сценарий с шагами и ожидаемым результатом.' },
+      { id:'q6', cat:'Виды тестирования', text:'Что тестирует smoke-тест?', options:['Полное покрытие функций','Критичный минимум — работает ли приложение вообще','Безопасность','Нагрузку'], answer:1, explain:'Smoke-тест — минимальная проверка жизнеспособности: открывается ли, не падает ли при базовых действиях.' },
+      { id:'q7', cat:'Виды тестирования', text:'Что такое нагрузочное тестирование?', options:['Тест на случайные данные','Проверка поведения системы под нагрузкой','Тест новых фич','Проверка безопасности'], answer:1, explain:'Нагрузочное тестирование проверяет систему под большим числом пользователей или запросов.' },
+      { id:'q8', cat:'Инструменты', text:'Для чего Postman?', options:['Написание кода','Тестирование API-запросов','Создание баг-репортов','Мониторинг серверов'], answer:1, explain:'Postman позволяет отправлять HTTP-запросы и проверять ответы API — незаменим для API-тестирования.' },
+      { id:'q9', cat:'Инструменты', text:'Для чего Jira в команде?', options:['Редактор кода','Трекер задач и багов','База данных','Система деплоя'], answer:1, explain:'Jira — система управления задачами. Баги, задачи, спринты — всё в одном месте.' },
+      { id:'q10', cat:'Инструменты', text:'Что такое TestRail?', options:['Система CI/CD','Система управления тест-кейсами','Библиотека автотестов','Мессенджер для команды'], answer:1, explain:'TestRail — инструмент для хранения, запуска и отслеживания результатов тест-кейсов.' },
+    ],
+    idp: {
+      base: [
+        { topic:'Основы тестирования: уровни, виды, жизненный цикл бага', weeks:2, link:'https://testingmn.ru', tag:'Теория' },
+        { topic:'Написание тест-кейсов и чек-листов', weeks:2, link:'https://habr.com/ru/hub/testing/', tag:'Документация' },
+        { topic:'Баг-репорт: структура и примеры', weeks:1, link:'https://habr.com', tag:'Документация' },
+        { topic:'Postman: базовое API-тестирование', weeks:2, link:'https://learning.postman.com', tag:'API' },
+        { topic:'Jira: работа с задачами и багами', weeks:1, link:'https://www.atlassian.com/ru/software/jira', tag:'Инструменты' },
+      ],
+      mid: [
+        { topic:'SQL для тестировщика: базовые запросы', weeks:2, link:'https://sqlzoo.net', tag:'SQL' },
+        { topic:'Основы автоматизации: Selenium/Playwright', weeks:4, link:'https://playwright.dev', tag:'Автоматизация' },
+      ],
+      advanced: [
+        { topic:'Нагрузочное тестирование: JMeter', weeks:3, link:'https://jmeter.apache.org', tag:'Нагрузка' },
+        { topic:'CI/CD: что должен знать QA', weeks:2, link:'https://habr.com', tag:'DevOps' },
+      ],
+    }
+  },
+  da: {
+    name: 'Data Analyst',
+    categories: { 'SQL':['q1','q2','q3'], 'Статистика':['q4','q5'], 'Python/инструменты':['q6','q7'], 'Аналитика':['q8','q9','q10'] },
+    questions: [
+      { id:'q1', cat:'SQL', text:'Что делает оператор GROUP BY?', options:['Сортирует строки','Группирует строки по значению для агрегатных функций','Фильтрует NULL','Объединяет таблицы'], answer:1, explain:'GROUP BY группирует строки с одинаковыми значениями для применения функций COUNT, SUM, AVG и т.д.' },
+      { id:'q2', cat:'SQL', text:'Чем LEFT JOIN отличается от INNER JOIN?', options:['LEFT возвращает только совпадения','INNER возвращает все строки левой таблицы','LEFT возвращает все строки левой таблицы + совпадения из правой','Они одинаковы'], answer:2, explain:'LEFT JOIN — все строки из левой таблицы, из правой только совпадающие (NULL если нет совпадения).' },
+      { id:'q3', cat:'SQL', text:'Что делает HAVING?', options:['То же что WHERE','Фильтрует результаты ПОСЛЕ группировки GROUP BY','Сортирует группы','Создаёт индекс'], answer:1, explain:'HAVING фильтрует уже сгруппированные данные — в отличие от WHERE, которая фильтрует строки до группировки.' },
+      { id:'q4', cat:'Статистика', text:'Что такое медиана?', options:['Среднее арифметическое','Наиболее частое значение','Центральное значение отсортированного ряда','Разность максимума и минимума'], answer:2, explain:'Медиана — значение, делящее отсортированный ряд пополам. Устойчива к выбросам в отличие от среднего.' },
+      { id:'q5', cat:'Статистика', text:'Что показывает p-value в A/B тесте?', options:['Размер эффекта','Вероятность получить такой результат случайно при нулевой гипотезе','Процент улучшения метрики','Размер выборки'], answer:1, explain:'p < 0.05 означает: вероятность случайного результата менее 5% — отвергаем нулевую гипотезу.' },
+      { id:'q6', cat:'Python/инструменты', text:'Для чего pandas в аналитике?', options:['Построение нейросетей','Работа с табличными данными (DataFrame)','Веб-скрапинг','Работа с изображениями'], answer:1, explain:'pandas — основная библиотека для работы с таблицами: фильтрация, группировка, merge, пивот и т.д.' },
+      { id:'q7', cat:'Python/инструменты', text:'Что такое дашборд?', options:['База данных','Интерактивный отчёт с ключевыми метриками','Скрипт для парсинга','Тип SQL-запроса'], answer:1, explain:'Дашборд — визуальный отчёт с ключевыми метриками в реальном времени. Строится в Tableau, Power BI, Metabase.' },
+      { id:'q8', cat:'Аналитика', text:'Что такое когортный анализ?', options:['Анализ одного пользователя','Анализ поведения групп пользователей, объединённых по времени вступления','Анализ конкурентов','Анализ рекламных каналов'], answer:1, explain:'Когортный анализ отслеживает поведение групп пользователей, вошедших в один период — помогает мерить retention.' },
+      { id:'q9', cat:'Аналитика', text:'Что такое воронка конверсий?', options:['График продаж по месяцам','Последовательность шагов пользователя с потерями на каждом этапе','Тип SQL-запроса','Рекламная кампания'], answer:1, explain:'Воронка показывает как пользователи проходят путь (регистрация → активация → покупка) и где отваливаются.' },
+      { id:'q10', cat:'Аналитика', text:'Что такое CAC?', options:['Customer Age Category','Customer Acquisition Cost — стоимость привлечения клиента','Content Automation Cost','Conversion Analytics Channel'], answer:1, explain:'CAC = маркетинговые расходы / количество новых клиентов. Ключевая метрика юнит-экономики.' },
+    ],
+    idp: {
+      base: [
+        { topic:'SQL: SELECT, WHERE, GROUP BY, JOIN', weeks:3, link:'https://sqlzoo.net', tag:'SQL' },
+        { topic:'Excel/Google Sheets: сводные, ВПР, графики', weeks:2, link:'https://support.google.com/docs', tag:'Таблицы' },
+        { topic:'Статистика: среднее, медиана, дисперсия', weeks:2, link:'https://stepik.org/course/76/', tag:'Статистика' },
+        { topic:'Python + pandas: базовые операции', weeks:3, link:'https://pandas.pydata.org/docs/getting_started/', tag:'Python' },
+      ],
+      mid: [
+        { topic:'A/B тесты: гипотезы, p-value, размер выборки', weeks:2, link:'https://habr.com/ru/hub/analytics/', tag:'Эксперименты' },
+        { topic:'Визуализация: Matplotlib / Plotly', weeks:2, link:'https://plotly.com/python/', tag:'Визуализация' },
+        { topic:'Дашборды в Metabase или DataLens', weeks:2, link:'https://datalens.yandex.ru', tag:'BI' },
+      ],
+      advanced: [
+        { topic:'ML основы: scikit-learn', weeks:4, link:'https://scikit-learn.org', tag:'ML' },
+        { topic:'Tableau или Power BI', weeks:3, link:'https://public.tableau.com', tag:'BI' },
+      ],
+    }
+  }
+};
+
+/* ── STATE ── */
+let S = { job: null, questions: [], current: 0, answers: [], answered: false };
+
+/* ── HELPERS ── */
+function setGP(v) { document.getElementById('gp-fill').style.width = v + '%'; }
+
+function scrollToQuiz() {
+  document.getElementById('quiz-section').scrollIntoView({ behavior:'smooth' });
+  track('hero_cta_click');
+}
+function scrollToHow() {
+  document.getElementById('how-section').scrollIntoView({ behavior:'smooth' });
+}
+
+/* ── JOB SELECT ── */
+function selectJob(job) {
+  S.job = job;
+  document.querySelectorAll('.job-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('job-' + job).classList.add('selected');
+  document.getElementById('start-btn').disabled = false;
+  track('job_selected', { job });
+}
+
+/* ── START ── */
+function startQuiz() {
+  if (!S.job) return;
+  S.questions = DB[S.job].questions;
+  S.current = 0; S.answers = [];
+  document.getElementById('job-picker').classList.add('hidden');
+  ['qz-prog-bar','qz-header','q-area','next-area'].forEach(id => document.getElementById(id).classList.remove('hidden'));
+  renderQ();
+  track('quiz_start', { job: S.job });
+  setGP(10);
+}
+
+/* ── RENDER QUESTION ── */
+function renderQ() {
+  const q = S.questions[S.current];
+  const total = S.questions.length;
+  S.answered = false;
+
+  document.getElementById('q-counter').textContent = (S.current + 1) + ' / ' + total;
+  document.getElementById('q-cat').textContent = q.cat;
+  document.getElementById('qz-prog-fill').style.width = (S.current / total * 100) + '%';
+  document.getElementById('q-text').textContent = q.text;
+
+  const letters = ['A','B','C','D'];
+  const ol = document.getElementById('opts');
+  ol.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const d = document.createElement('div');
+    d.className = 'option';
+    d.innerHTML = `<div class="option-letter">${letters[i]}</div><span>${opt}</span>`;
+    d.onclick = () => selectAnswer(i);
+    ol.appendChild(d);
+  });
+
+  const exp = document.getElementById('opt-explain');
+  exp.className = 'opt-explain'; exp.textContent = '';
+
+  const nb = document.getElementById('next-btn');
+  nb.textContent = S.current < total - 1 ? 'Следующий вопрос →' : 'Посмотреть результат →';
+  nb.disabled = true;
+
+  setGP(10 + (S.current / total) * 70);
+}
+
+/* ── ANSWER ── */
+function selectAnswer(i) {
+  if (S.answered) return;
+  S.answered = true;
+
+  const q = S.questions[S.current];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(o => o.classList.add('disabled'));
+
+  const ok = i === q.answer;
+  opts[i].classList.add(ok ? 'correct' : 'wrong');
+  if (!ok) opts[q.answer].classList.add('correct');
+
+  S.answers.push({ qIdx: S.current, chosen: i, correct: ok });
+
+  const exp = document.getElementById('opt-explain');
+  exp.className = 'opt-explain vis ' + (ok ? 'ok' : 'fail');
+  exp.textContent = (ok ? '✓ Верно. ' : '✗ Неверно. ') + q.explain;
+
+  document.getElementById('next-btn').disabled = false;
+  track('answer', { job: S.job, q: S.current, correct: ok });
+}
+
+/* ── NEXT ── */
+function nextQ() {
+  if (!S.answered) return;
+  if (S.current < S.questions.length - 1) { S.current++; renderQ(); }
+  else showResults();
+}
+
+/* ── RESULTS ── */
+function showResults() {
+  document.getElementById('quiz-section').classList.add('hidden');
+  const rs = document.getElementById('result-section');
+  rs.style.display = 'block';
+
+  const correct = S.answers.filter(a => a.correct).length;
+  const total = S.questions.length;
+  const pct = Math.round(correct / total * 100);
+  const jd = DB[S.job];
+  setGP(85);
+
+  // Category scores
+  const catScores = {};
+  for (const [cat, qIds] of Object.entries(jd.categories)) {
+    const ct = qIds.length;
+    const cc = qIds.reduce((acc, qId) => {
+      const gi = jd.questions.findIndex(q => q.id === qId);
+      const ans = S.answers.find(a => a.qIdx === gi);
+      return acc + (ans && ans.correct ? 1 : 0);
+    }, 0);
+    catScores[cat] = { correct: cc, total: ct, pct: Math.round(cc / ct * 100) };
+  }
+
+  const weakCats = Object.entries(catScores).filter(([,v]) => v.pct < 60).sort((a,b) => a[1].pct - b[1].pct);
+  const wrong = S.answers.filter(a => !a.correct).map(a => ({ ...a, q: S.questions[a.qIdx] }));
+
+  const lvl = pct < 40 ? 'Стартуем с основ' : pct <= 70 ? 'Есть пробелы' : 'Хорошая база!';
+  const lvlColor = pct < 40 ? 'var(--red)' : pct <= 70 ? '#e8a830' : 'var(--green)';
+
+  const catBars = Object.entries(catScores).map(([cat, v]) => {
+    const c = v.pct < 40 ? 'var(--red)' : v.pct < 60 ? '#e8a830' : 'var(--green)';
+    return `<div class="skill-row">
+      <div class="skill-name">${cat}</div>
+      <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:${v.pct}%;background:${c}"></div></div>
+      <div class="skill-score">${v.correct}/${v.total}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('res-top').innerHTML = `
+    <div class="res-job">${jd.name}</div>
+    <div class="res-title">Результат теста</div>
+    <div class="score-row">
+      <div class="score-item">
+        <div class="score-num score-lime">${pct}%</div>
+        <div class="score-label">правильных</div>
+      </div>
+      <div class="score-item">
+        <div class="score-num">${correct}/${total}</div>
+        <div class="score-label">вопросов</div>
+      </div>
+      <div class="score-item">
+        <div class="score-num" style="font-size:1.4rem;color:${lvlColor};padding-top:10px">${lvl}</div>
+        <div class="score-label">уровень</div>
+      </div>
+    </div>
+    <div class="skill-section">
+      <div class="skill-head">По категориям</div>
+      ${catBars}
+    </div>
+  `;
+
+  // Gaps list
+  if (weakCats.length > 0) {
+    const gb = document.getElementById('gaps-block');
+    gb.classList.remove('hidden');
+    gb.innerHTML = `<div class="gaps-title">⚠ Пробелы (${weakCats.length} ${weakCats.length === 1 ? 'категория' : 'категории'})</div>` +
+      weakCats.map(([cat, v]) => `<div class="gap-item"><div class="gap-dot"></div><div><strong>${cat}</strong> — ${v.correct} из ${v.total} (${v.pct}%). ${getGapAdvice(cat, S.job)}</div></div>`).join('');
+  }
+
+  // Wrongs
+  if (wrong.length > 0) {
+    const wb = document.getElementById('wrongs-block');
+    wb.classList.remove('hidden');
+    const L = ['A','B','C','D'];
+    wb.innerHTML = `<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;">Ошибки в деталях (${wrong.length})</div>` +
+      wrong.map(a => `<div class="wrong-item">
+        <div class="wrong-tag">Пробел</div>
+        <div class="wrong-q">${a.q.text}</div>
+        <div class="wrong-your">✗ Твой ответ: ${a.q.options[a.chosen]}</div>
+        <div class="wrong-right">✓ Правильный: ${a.q.options[a.q.answer]}</div>
+      </div>`).join('');
+  }
+
+  // Gap map + CTA — ключевая точка конверсии
+  if (wrong.length >= 2) {
+    const gm = document.getElementById('gap-map-block');
+    gm.classList.remove('hidden');
+    const mainGap = weakCats.length > 0 ? weakCats[0][0] : 'ключевые темы';
+    document.getElementById('gap-map-title').textContent = `Твои пробелы: ${wrong.length} из ${total} тем`;
+    document.getElementById('gap-map-sub').textContent = `Главный пробел — ${mainGap}. Это именно то, что спросят на собеседовании.`;
+
+    const bars = Object.entries(catScores).map(([cat, v]) => {
+      const c = v.pct < 40 ? 'var(--red)' : v.pct < 60 ? '#e8a830' : 'var(--green)';
+      return `<div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)">
+        <span style="flex:1;font-size:.88rem">${cat}</span>
+        <div style="width:140px;height:4px;background:var(--border2);border-radius:2px;flex-shrink:0">
+          <div style="width:${v.pct}%;height:100%;border-radius:2px;background:${c};transition:width .6s"></div>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${c};width:34px;text-align:right">${v.pct}%</span>
+      </div>`;
+    }).join('');
+    document.getElementById('gap-map-bars').innerHTML = bars;
+
+    const cm = document.getElementById('cta-main');
+    cm.classList.remove('hidden');
+    document.getElementById('cta-main-title').textContent = `Закрой пробел в ${mainGap} — получи оффер`;
+    document.getElementById('cta-main-sub').textContent = `Ты допустил ${wrong.length} ошибок. Куратор или эксперт разберут каждую и составят план — закроешь за 30 дней.`;
+    track('cta_shown', { job: S.job, wrong: wrong.length, pct });
+  }
+
+  // IDP
+  const idpB = document.getElementById('idp-block');
+  idpB.classList.remove('hidden');
+  let items = jd.idp.base;
+  if (pct > 40 && pct <= 70) items = [...jd.idp.base, ...jd.idp.mid];
+  if (pct > 70) items = [...jd.idp.mid, ...jd.idp.advanced];
+
+  document.getElementById('idp-title').textContent = `Твой план: ${jd.name}`;
+  document.getElementById('idp-sub').textContent = pct <= 70
+    ? `На основе ошибок — ${items.length} тем для закрытия пробелов`
+    : `Сильная база! Вот что прокачать дальше (${items.length} тем)`;
+
+  let week = 1;
+  document.getElementById('idp-list').innerHTML = items.map((item, idx) => {
+    const dl = `Неделя ${week}–${week + item.weeks - 1}`;
+    week += item.weeks;
+    return `<div class="idp-item">
+      <div class="idp-check" id="chk-${idx}" onclick="this.classList.toggle('done')"></div>
+      <div class="idp-body">
+        <div class="idp-topic">${item.topic}</div>
+        <div class="idp-meta">
+          <span class="idp-tag">${item.tag}</span>
+          <span class="idp-deadline">${dl}</span>
+        </div>
+        <a href="${item.link}" target="_blank" rel="noopener" class="idp-link">Открыть ресурс →</a>
+      </div>
+    </div>`;
+  }).join('');
+
+  setGP(100);
+  rs.scrollIntoView({ behavior:'smooth', block:'start' });
+  track('quiz_complete', { job: S.job, pct, correct, total, weakCats: weakCats.map(([c]) => c) });
+}
+
+function getGapAdvice(cat, job) {
+  const A = {
+    smm: { 'Метрики':'Изучи ROMI, CTR, ER — без метрик нельзя оценивать эффективность.', 'Контент':'Форматы и контент-план — основа работы SMM.', 'Таргет':'Без таргетинга сложно масштабироваться.', 'Стратегия':'TOV и KPI — уровень Middle+.' },
+    python: { 'Синтаксис':'Базовый синтаксис — фундамент всего.', 'Структуры данных':'list/dict/set — в каждой программе.', 'ООП':'Без ООП не пройдёшь большинство интервью.', 'Инструменты':'Git и venv — обязательны на первой работе.' },
+    qa: { 'Теория':'Основы — база любого интервью.', 'Документация':'Тест-кейсы и баг-репорты — ключевой скилл джуниора.', 'Виды тестирования':'Обязательно для технического собеседования.', 'Инструменты':'Postman и Jira — в каждой вакансии.' },
+    da: { 'SQL':'Навык №1 — без него нет ни одного интервью.', 'Статистика':'Нужна для A/B тестов.', 'Python/инструменты':'pandas — замени Excel.', 'Аналитика':'Метрики продукта — за что нанимают аналитиков.' },
+  };
+  return (A[job] && A[job][cat]) || 'Рекомендуем изучить эту область подробнее.';
+}
+
+function trackCTA(type, amount) {
+  track('cta_click', { type, amount, job: S.job });
+  // Здесь можно: показать форму email, редирект на оплату, показать popup
+  alert(`✓ Зафиксировано! Тип: ${type === 'curator' ? 'Лайт-куратор' : 'Эксперт 1:1'} · ${amount.toLocaleString('ru-RU')} ₽\n\nЭто тест конверсии — оплата пока не требуется.\nЦель: 20% нажатий после просмотра карты пробелов.`);
+  console.log('[CTA_CONVERSION]', type, amount, 'job:', S.job);
+}
+
+function savePDF() {
+  track('pdf_save', { job: S.job });
+  alert('PDF-экспорт — в следующей версии');
+}
+
+window.addEventListener('scroll', () => {
+  const fill = document.getElementById('gp-fill');
+  if ((parseFloat(fill.style.width)||0) >= 15) return;
+  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 15;
+  fill.style.width = Math.min(15, pct) + '%';
+});
+</script>
+</body>
+</html>
