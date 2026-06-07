@@ -481,6 +481,17 @@ footer {
   footer { padding: 24px 20px; }
   h1 { font-size: 1.9rem; }
 }
+/* ── GAP CTA PILL ── */
+.gap-cta-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 16px;
+  background: var(--lime-dim); border: 1px solid rgba(200,241,53,.35);
+  border-radius: 100px; padding: 8px 18px 8px 12px;
+  font-size: 13px; color: var(--lime); cursor: pointer;
+  font-weight: 500; transition: background .15s, border-color .15s;
+  font-family: 'Onest', sans-serif;
+}
+.gap-cta-pill:hover { background: rgba(200,241,53,.22); border-color: var(--lime); }
 </style>
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
@@ -1032,6 +1043,16 @@ function showResults() {
   }
 
   // Wrongs
+// Gap CTA pill — при клике скроллит к блоку куратор/эксперт
+  if (weakCats.length > 0 && wrong.length >= 2) {
+    const gb = document.getElementById('gaps-block');
+    const pill = document.createElement('div');
+    pill.className = 'gap-cta-pill';
+    pill.innerHTML = '<span style="font-size:15px">↓</span> Закрыть пробелы';
+    pill.onclick = () => document.getElementById('cta-main').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    gb.appendChild(pill);
+  }
+  
   if (wrong.length > 0) {
     const wb = document.getElementById('wrongs-block');
     wb.classList.remove('hidden');
