@@ -278,7 +278,10 @@ h2 {
   font-size: 1.5rem; font-weight: 600;
   letter-spacing: -.02em; margin-bottom: 24px; line-height: 1.2;
 }
-.score-row { display: flex; gap: 32px; margin-bottom: 28px; flex-wrap: wrap; }
+.score-row {
+  display: flex; gap: 32px; margin-bottom: 28px;
+  flex-wrap: wrap; align-items: flex-end;
+}
 .score-item { display: flex; flex-direction: column; gap: 3px; }
 .score-num {
   font-family: 'Unbounded', sans-serif;
@@ -288,6 +291,47 @@ h2 {
 .score-lime { color: var(--lime); }
 .score-red { color: var(--red); }
 .score-green { color: var(--green); }
+
+/* ── CLOSE GAPS BUTTON in score row ── */
+.score-close-btn {
+  margin-left: auto;
+  align-self: center;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  cursor: pointer;
+}
+.score-close-btn-inner {
+  background: var(--lime); color: var(--black);
+  border: none; border-radius: 10px;
+  font-family: 'Onest', sans-serif;
+  font-size: .82rem; font-weight: 600;
+  padding: 10px 18px;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 7px;
+  white-space: nowrap;
+  animation: pulse-lime 2.2s ease-in-out infinite;
+  transition: opacity .15s;
+}
+.score-close-btn-inner:hover { opacity: .85; animation: none; }
+.score-close-btn-label {
+  font-size: 10px; color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: .06em;
+}
+@keyframes pulse-lime {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,241,53,0); }
+  50% { box-shadow: 0 0 0 7px rgba(200,241,53,0.18); }
+}
+
+/* ── CTA highlight animation ── */
+@keyframes cta-flash {
+  0%   { box-shadow: 0 0 0 0 rgba(200,241,53,0); transform: scale(1); }
+  20%  { box-shadow: 0 0 0 12px rgba(200,241,53,0.35); transform: scale(1.012); }
+  60%  { box-shadow: 0 0 0 6px rgba(200,241,53,0.15); transform: scale(1.005); }
+  100% { box-shadow: 0 0 0 0 rgba(200,241,53,0); transform: scale(1); }
+}
+.cta-main.flash {
+  animation: cta-flash 0.7s ease-out;
+}
 
 .skill-section { margin-top: 24px; }
 .skill-head {
@@ -353,10 +397,11 @@ h2 {
 }
 .gap-map-sub { font-size: .85rem; color: var(--muted2); margin-bottom: 24px; }
 
-/* Conversion CTA — ключевой блок */
+/* Conversion CTA */
 .cta-main {
   background: var(--lime); border-radius: 16px;
   padding: 36px; margin-bottom: 20px; text-align: center;
+  transition: transform .15s;
 }
 .cta-main-tag {
   font-family: 'JetBrains Mono', monospace;
@@ -476,22 +521,12 @@ footer {
   .job-grid { grid-template-columns: 1fr; }
   .cta-cards-row { grid-template-columns: 1fr; }
   .score-row { gap: 20px; }
+  .score-close-btn { margin-left: 0; margin-top: 4px; }
   #job-picker, #q-area, #next-area, .gap-map, .cta-main, .idp-box, .res-top { padding: 24px 20px; }
   #qz-header { padding: 14px 20px 0; }
   footer { padding: 24px 20px; }
   h1 { font-size: 1.9rem; }
 }
-/* ── GAP CTA PILL ── */
-.gap-cta-pill {
-  display: inline-flex; align-items: center; gap: 8px;
-  margin-top: 16px;
-  background: var(--lime-dim); border: 1px solid rgba(200,241,53,.35);
-  border-radius: 100px; padding: 8px 18px 8px 12px;
-  font-size: 13px; color: var(--lime); cursor: pointer;
-  font-weight: 500; transition: background .15s, border-color .15s;
-  font-family: 'Onest', sans-serif;
-}
-.gap-cta-pill:hover { background: rgba(200,241,53,.22); border-color: var(--lime); }
 </style>
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
@@ -506,7 +541,6 @@ footer {
 </script>
 <noscript><div><img src="https://mc.yandex.ru/watch/109712032" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
-  
 </head>
 <body>
 
@@ -664,7 +698,7 @@ footer {
     <!-- Wrongs detail -->
     <div class="wrongs-block hidden" id="wrongs-block"></div>
 
-    <!-- GAP MAP + MAIN CTA — ключевой блок конверсии -->
+    <!-- GAP MAP -->
     <div class="gap-map hidden" id="gap-map-block">
       <div class="gap-map-title" id="gap-map-title">Твоя карта пробелов</div>
       <div class="gap-map-sub" id="gap-map-sub">Вот что конкретно нужно закрыть, чтобы пройти собеседование</div>
@@ -733,11 +767,10 @@ function track(ev, data={}) {
   const entry = { ev, ...data, ts: new Date().toISOString() };
   _ev.push(entry);
   console.log('[WORKUP]', entry);
-  // Подключить: PostHog / Яндекс.Метрика / GA4
 }
 track('page_view');
 
-/* ── DB (перенесена из v1 без изменений) ── */
+/* ── DB ── */
 const DB = {
   smm: {
     name: 'SMM-менеджер',
@@ -889,6 +922,18 @@ function scrollToHow() {
   document.getElementById('how-section').scrollIntoView({ behavior:'smooth' });
 }
 
+function scrollToCTA() {
+  const cta = document.getElementById('cta-main');
+  cta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // flash animation
+  setTimeout(() => {
+    cta.classList.remove('flash');
+    void cta.offsetWidth; // reflow to restart animation
+    cta.classList.add('flash');
+  }, 400);
+  track('close_gaps_btn_click', { job: S.job });
+}
+
 /* ── JOB SELECT ── */
 function selectJob(job) {
   S.job = job;
@@ -1002,6 +1047,17 @@ function showResults() {
   const lvl = pct < 40 ? 'Стартуем с основ' : pct <= 70 ? 'Есть пробелы' : 'Хорошая база!';
   const lvlColor = pct < 40 ? 'var(--red)' : pct <= 70 ? '#e8a830' : 'var(--green)';
 
+  // Показываем кнопку «Закрыть пробелы» только если есть пробелы и будет CTA
+  const showCloseBtn = wrong.length >= 2;
+  const closeBtnHTML = showCloseBtn ? `
+    <div class="score-close-btn" onclick="scrollToCTA()">
+      <button class="score-close-btn-inner">
+        ↓ Закрыть пробелы
+      </button>
+      <span class="score-close-btn-label">куратор или эксперт</span>
+    </div>
+  ` : '';
+
   const catBars = Object.entries(catScores).map(([cat, v]) => {
     const c = v.pct < 40 ? 'var(--red)' : v.pct < 60 ? '#e8a830' : 'var(--green)';
     return `<div class="skill-row">
@@ -1027,6 +1083,7 @@ function showResults() {
         <div class="score-num" style="font-size:1.4rem;color:${lvlColor};padding-top:10px">${lvl}</div>
         <div class="score-label">уровень</div>
       </div>
+      ${closeBtnHTML}
     </div>
     <div class="skill-section">
       <div class="skill-head">По категориям</div>
@@ -1043,20 +1100,9 @@ function showResults() {
   }
 
   // Wrongs
-// Gap CTA pill — при клике скроллит к блоку куратор/эксперт
-  if (weakCats.length > 0 && wrong.length >= 2) {
-    const gb = document.getElementById('gaps-block');
-    const pill = document.createElement('div');
-    pill.className = 'gap-cta-pill';
-    pill.innerHTML = '<span style="font-size:15px">↓</span> Закрыть пробелы';
-    pill.onclick = () => document.getElementById('cta-main').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    gb.appendChild(pill);
-  }
-  
   if (wrong.length > 0) {
     const wb = document.getElementById('wrongs-block');
     wb.classList.remove('hidden');
-    const L = ['A','B','C','D'];
     wb.innerHTML = `<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;">Ошибки в деталях (${wrong.length})</div>` +
       wrong.map(a => `<div class="wrong-item">
         <div class="wrong-tag">Пробел</div>
@@ -1066,7 +1112,7 @@ function showResults() {
       </div>`).join('');
   }
 
-  // Gap map + CTA — ключевая точка конверсии
+  // Gap map + CTA
   if (wrong.length >= 2) {
     const gm = document.getElementById('gap-map-block');
     gm.classList.remove('hidden');
@@ -1139,7 +1185,6 @@ function getGapAdvice(cat, job) {
 
 function trackCTA(type, amount) {
   track('cta_click', { type, amount, job: S.job });
-  // Здесь можно: показать форму email, редирект на оплату, показать popup
   alert(`✓ Зафиксировано! Тип: ${type === 'curator' ? 'Лайт-куратор' : 'Эксперт 1:1'} · ${amount.toLocaleString('ru-RU')} ₽\n\nЭто тест конверсии — оплата пока не требуется.\nЦель: 20% нажатий после просмотра карты пробелов.`);
   console.log('[CTA_CONVERSION]', type, amount, 'job:', S.job);
 }
