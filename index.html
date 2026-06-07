@@ -925,10 +925,9 @@ function scrollToHow() {
 function scrollToCTA() {
   const cta = document.getElementById('cta-main');
   cta.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  // flash animation
   setTimeout(() => {
     cta.classList.remove('flash');
-    void cta.offsetWidth; // reflow to restart animation
+    void cta.offsetWidth;
     cta.classList.add('flash');
   }, 400);
   track('close_gaps_btn_click', { job: S.job });
